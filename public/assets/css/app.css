@@ -1,0 +1,16 @@
+/* Đổi màu chủ đạo ở :root — Leader chỉnh theo thiết kế rồi cả team dùng chung */
+:root {
+    --brand: #212529;
+    --brand-accent: #d63384;
+}
+
+body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+
+.hero { background: linear-gradient(135deg, #fff4e6, #ffe3ec); }
+.category-tile:hover { border-color: var(--brand) !important; background: #f8f9fa; }
+.product-card { position: relative; transition: transform .15s; }
+.product-card:hover { transform: translateY(-3px); }
+.product-card .object-fit-cover { object-fit: cover; }
+
+.admin-sidebar { width: 230px; min-height: 100vh; flex-shrink: 0; }
+.admin-sidebar .nav-link.active { background: rgba(255, 255, 255, .1); border-radius: .375rem; }
