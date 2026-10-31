@@ -4,43 +4,90 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Http\Traits\ApiResponse;
+use App\Models\Payment;
+use App\Services\OrderService;
+use App\Services\PaymentService;
+use DomainException;
 use Illuminate\Http\Request;
+use InvalidArgumentException;
+use Throwable;
 
-/**
- * [Leader] PayOS: return/cancel redirect + webhook (idempotent).
- *
- * BẢN KHUNG: mỗi method có sẵn ĐƯỜNG ĐI các bước cần làm (đọc theo thứ tự 1 -> n).
- * Làm xong thì xóa dòng abort(501) và viết code thật.
- */
+/** PayOS: return/cancel redirect + webhook (idempotent). */
 class PaymentController extends Controller
 {
     use ApiResponse;
 
-    /** GET /payment/return */
+    public function __construct(private PaymentService $payments, private OrderService $orders) {}
+
+    /** GET /payment/return — user quay về sau khi thanh toán. Query chỉ để TÌM đơn, không để đánh dấu paid. */
     public function payosReturn(Request $request)
     {
-        // 1. Đọc orderCode từ query, tìm payment
-        // 2. KHÔNG tin query để đánh dấu paid — chỉ webhook mới được cập nhật
-        // 3. redirect orders.show
-        abort(501, 'TODO [Leader]: PaymentController@payosReturn');
+        $payment = $this->findOwnedPayment($request);
+        if (!$payment) {
+            return redirect()->route('orders.index')->with('error', 'Không tìm thấy giao dịch.');
+        }
+
+        $this->payments->syncStatus($payment);   // hỏi lại PayOS (server-to-server) thay vì tin query
+        $order = $payment->order->refresh();
+
+        $message = $order->payment_status === 'paid'
+            ? 'Thanh toán thành công! Đơn hàng của bạn đã được xác nhận.'
+            : 'Hệ thống đang xác nhận thanh toán, vui lòng tải lại trang sau ít giây.';
+
+        return redirect()->route('orders.show', $order->order_code)->with('success', $message);
     }
 
-    /** GET /payment/cancel */
+    /** GET /payment/cancel — user bấm hủy trên trang PayOS. */
     public function payosCancel(Request $request)
     {
-        // 1. Đánh dấu hủy/failed nếu cần, báo user
-        // 2. redirect orders.show
-        abort(501, 'TODO [Leader]: PaymentController@payosCancel');
+        $payment = $this->findOwnedPayment($request);
+        if (!$payment) {
+            return redirect()->route('orders.index')->with('error', 'Không tìm thấy giao dịch.');
+        }
+
+        $this->payments->syncStatus($payment);   // phòng khi thực ra đã trả tiền
+        $order = $payment->order->refresh();
+
+        if ($order->payment_status === 'paid') {
+            return redirect()->route('orders.show', $order->order_code)->with('success', 'Đơn hàng đã được thanh toán.');
+        }
+
+        try {
+            $this->payments->cancelPayosLink($payment);
+            $this->orders->cancel($order, true);    // hoàn kho + coupon
+            $this->orders->restoreCart($order);     // trả sản phẩm về giỏ
+        } catch (DomainException $e) {
+            return redirect()->route('orders.show', $order->order_code)->with('error', $e->getMessage());
+        }
+
+        return redirect()->route('cart.index')->with('error', 'Bạn đã hủy thanh toán. Sản phẩm đã được trả về giỏ hàng.');
     }
 
-    /** POST /payment/payos/webhook */
+    /** POST /payment/payos/webhook — PayOS gọi (không auth, không CSRF; bảo vệ bằng chữ ký). */
     public function webhook(Request $request)
     {
-        // 1. PaymentService::handleWebhook($request->all())
-        // 2. Verify chữ ký -> sai trả 400
-        // 3. DB::transaction + lockForUpdate payment
-        // 4. Nếu payment đã paid (hoặc transaction_id đã có) -> trả 200 và DỪNG (idempotent)
-        // 5. Update payment paid + order payment_status=paid, status=confirmed
-        abort(501, 'TODO [Leader]: PaymentController@webhook');
+        try {
+            $this->payments->handleWebhook($request->all());
+        } catch (InvalidArgumentException $e) {
+            return response()->json(['success' => false, 'message' => 'Invalid signature'], 400);
+        } catch (Throwable $e) {
+            report($e);
+            return response()->json(['success' => false, 'message' => 'Server error'], 500); // 5xx để PayOS gửi lại
+        }
+
+        return response()->json(['success' => true, 'message' => 'OK']);
+    }
+
+    /** Tìm payment theo ?orderCode và chỉ trả về nếu thuộc về user đang đăng nhập (chống xem/hủy đơn người khác). */
+    private function findOwnedPayment(Request $request): ?Payment
+    {
+        $code = (string) $request->query('orderCode');
+        if (!ctype_digit($code)) {
+            return null;
+        }
+
+        $payment = Payment::with('order')->where('provider_order_code', (int) $code)->first();
+
+        return ($payment && (int) $payment->order->user_id === (int) $request->user()->id) ? $payment : null;
     }
 }

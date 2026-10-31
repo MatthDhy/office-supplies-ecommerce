@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 | ROUTES CHO KHÁCH / USER (khu Admin nằm ở routes/admin.php)
 | Tag [A] [B] [C] = người phụ trách. Thêm route mới vào ĐÚNG nhóm của mình.
+| throttle:N,1 = tối đa N request / phút / IP (chống dò mật khẩu, dò mã giảm giá, spam đặt đơn)
 |--------------------------------------------------------------------------
 */
 
@@ -37,9 +38,9 @@ Route::prefix('cart')->name('cart.')->controller(CartController::class)->group(f
 // ============ AUTH (chưa đăng nhập) ============ [A]
 Route::middleware('guest')->controller(AuthController::class)->group(function () {
     Route::get('/login', 'showLogin')->name('login');
-    Route::post('/login', 'login')->name('login.submit');
+    Route::post('/login', 'login')->middleware('throttle:6,1')->name('login.submit');
     Route::get('/register', 'showRegister')->name('register');
-    Route::post('/register', 'register')->name('register.submit');
+    Route::post('/register', 'register')->middleware('throttle:10,1')->name('register.submit');
 });
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
@@ -48,8 +49,8 @@ Route::middleware('auth')->group(function () {
 
     // --- Checkout / Coupon / Order create --- [A]
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
-    Route::post('/coupon/apply', [CouponController::class, 'apply'])->name('coupon.apply');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->middleware('throttle:10,1')->name('checkout.store');
+    Route::post('/coupon/apply', [CouponController::class, 'apply'])->middleware('throttle:15,1')->name('coupon.apply');
 
     // --- Payment redirect --- [A]
     Route::get('/payment/return', [PaymentController::class, 'payosReturn'])->name('payment.return');
@@ -77,5 +78,5 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile/addresses/{address}/default', [ProfileController::class, 'setDefaultAddress'])->name('profile.addresses.default');
 });
 
-// ============ WEBHOOK (server PayOS gọi, KHÔNG auth, KHÔNG csrf) ============ [A]
-Route::post('/payment/payos/webhook', [PaymentController::class, 'webhook'])->name('payment.webhook');
+// ============ WEBHOOK (server PayOS gọi, KHÔNG auth, KHÔNG csrf — bảo vệ bằng chữ ký) ============ [A]
+Route::post('/payment/payos/webhook', [PaymentController::class, 'webhook'])->middleware('throttle:120,1')->name('payment.webhook');
