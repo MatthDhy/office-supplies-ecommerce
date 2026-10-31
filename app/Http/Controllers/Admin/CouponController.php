@@ -3,64 +3,77 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\CouponRequest;
 use App\Http\Traits\ApiResponse;
+use App\Models\Coupon;
 use Illuminate\Http\Request;
 
 /**
- * [Thành viên C] Admin CRUD coupons.
- *
- * BẢN KHUNG: mỗi method có sẵn ĐƯỜNG ĐI các bước cần làm (đọc theo thứ tự 1 -> n).
- * Làm xong thì xóa dòng abort(501) và viết code thật.
+ * Admin CRUD mã giảm giá. used_count do hệ thống tự tăng/giảm (OrderService), admin không sửa tay.
+ * View nhận: index -> $coupons (Paginator), $filters | create | edit -> $coupon
  */
 class CouponController extends Controller
 {
     use ApiResponse;
 
-    /** GET /admin/coupons */
+    /** GET /admin/coupons?q=&status= */
     public function index(Request $request)
     {
-        // 1. Paginate + ô tìm kiếm + lọc status
-        // 2. return view('admin.coupons.index')
-        abort(501, 'TODO [Thành viên C]: CouponController@index');
+        $filters = [
+            'q'      => is_string($request->query('q')) ? trim($request->query('q')) : '',
+            'status' => in_array($request->query('status'), ['active', 'inactive'], true) ? $request->query('status') : '',
+        ];
+
+        $coupons = Coupon::query()
+            ->when($filters['q'] !== '', fn ($q) => $q->where('code', 'like', '%' . addcslashes($filters['q'], '%_\\') . '%'))
+            ->when($filters['status'] !== '', fn ($q) => $q->where('status', $filters['status']))
+            ->latest('id')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('admin.coupons.index', compact('coupons', 'filters'));
     }
 
     /** GET /admin/coupons/create */
     public function create()
     {
-        // 1. return view('admin.coupons.create')
-        abort(501, 'TODO [Thành viên C]: CouponController@create');
+        return view('admin.coupons.create');
     }
 
     /** POST /admin/coupons */
-    public function store(Request $request)
+    public function store(CouponRequest $request)
     {
-        // 1. Tạo FormRequest riêng (validate + unique slug)
-        // 2. Str::slug($name) nếu slug để trống
-        // 3. Tạo bản ghi
-        // 4. redirect index with success
-        abort(501, 'TODO [Thành viên C]: CouponController@store');
+        Coupon::create($request->payload());
+
+        return redirect()->route('admin.coupons.index')->with('success', 'Đã tạo mã giảm giá.');
     }
 
-    /** GET /admin/coupons/{id}/edit */
-    public function edit(\App\Models\Coupon $coupon)
+    /** GET /admin/coupons/{coupon}/edit */
+    public function edit(Coupon $coupon)
     {
-        // 1. return view('admin.coupons.edit')
-        abort(501, 'TODO [Thành viên C]: CouponController@edit');
+        return view('admin.coupons.edit', compact('coupon'));
     }
 
-    /** PUT /admin/coupons/{id} */
-    public function update(Request $request, \App\Models\Coupon $coupon)
+    /** PUT /admin/coupons/{coupon} */
+    public function update(CouponRequest $request, Coupon $coupon)
     {
-        // 1. Validate (unique bỏ qua chính nó: Rule::unique(...)->ignore($coupon->id))
-        // 2. Cập nhật (nếu thay ảnh thì xóa ảnh cũ)
-        // 3. redirect index with success
-        abort(501, 'TODO [Thành viên C]: CouponController@update');
+        $coupon->update($request->payload());   // đơn cũ đã lưu snapshot mã/giảm trong order_coupons nên không bị ảnh hưởng
+
+        return redirect()->route('admin.coupons.index')->with('success', 'Đã cập nhật mã giảm giá.');
     }
 
-    /** DELETE /admin/coupons/{id} */
-    public function destroy(\App\Models\Coupon $coupon)
+    /** DELETE /admin/coupons/{coupon} — đã từng dùng thì chỉ chuyển inactive (giữ lịch sử order_coupons) */
+    public function destroy(Coupon $coupon)
     {
-        // 1. Coupon đã dùng (used_count>0) -> không xóa, chuyển status=inactive
-        abort(501, 'TODO [Thành viên C]: CouponController@destroy');
+        if ($coupon->used_count > 0 || $coupon->orderCoupons()->exists()) {
+            $coupon->update(['status' => 'inactive']);
+
+            return redirect()->route('admin.coupons.index')
+                ->with('success', 'Mã đã từng được sử dụng nên không xóa hẳn — đã chuyển sang inactive.');
+        }
+
+        $coupon->delete();
+
+        return redirect()->route('admin.coupons.index')->with('success', 'Đã xóa mã giảm giá.');
     }
 }

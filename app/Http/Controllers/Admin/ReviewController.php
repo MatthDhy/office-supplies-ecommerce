@@ -4,36 +4,57 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Traits\ApiResponse;
+use App\Models\Review;
 use Illuminate\Http\Request;
 
 /**
- * [Thành viên C] Quản lý đánh giá vi phạm.
- *
- * BẢN KHUNG: mỗi method có sẵn ĐƯỜNG ĐI các bước cần làm (đọc theo thứ tự 1 -> n).
- * Làm xong thì xóa dòng abort(501) và viết code thật.
+ * Kiểm duyệt đánh giá: ẩn/hiện hoặc xóa review vi phạm.
+ * View nhận: index -> $reviews (Paginator; $review->product có thể là sản phẩm đã xóa mềm nhưng vẫn có dữ liệu), $filters
  */
 class ReviewController extends Controller
 {
     use ApiResponse;
 
-    /** GET /admin/reviews */
+    /** GET /admin/reviews?q=&status=&rating= */
     public function index(Request $request)
     {
-        // 1. Review::with('user','product')->latest()->paginate(15)
-        abort(501, 'TODO [Thành viên C]: ReviewController@index');
+        $filters = [
+            'q'      => is_string($request->query('q')) ? trim($request->query('q')) : '',
+            'status' => in_array($request->query('status'), ['visible', 'hidden'], true) ? $request->query('status') : '',
+            'rating' => in_array((int) $request->query('rating'), [1, 2, 3, 4, 5], true) ? (int) $request->query('rating') : null,
+        ];
+        $like = '%' . addcslashes($filters['q'], '%_\\') . '%';
+
+        $reviews = Review::with([
+                'user:id,full_name,email',
+                'product' => fn ($q) => $q->withTrashed()->select('id', 'name', 'slug'),
+            ])
+            ->when($filters['q'] !== '', fn ($q) => $q->where(fn ($w) => $w
+                ->where('comment', 'like', $like)
+                ->orWhereHas('product', fn ($p) => $p->withTrashed()->where('name', 'like', $like))
+                ->orWhereHas('user', fn ($u) => $u->where('full_name', 'like', $like))))
+            ->when($filters['status'] !== '', fn ($q) => $q->where('status', $filters['status']))
+            ->when($filters['rating'], fn ($q, $r) => $q->where('rating', $r))
+            ->latest('id')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('admin.reviews.index', compact('reviews', 'filters'));
     }
 
-    /** PATCH /admin/reviews/{review}/toggle */
-    public function toggle(\App\Models\Review $review)
+    /** PATCH /admin/reviews/{review}/toggle — visible <-> hidden */
+    public function toggle(Review $review)
     {
-        // 1. visible <-> hidden
-        abort(501, 'TODO [Thành viên C]: ReviewController@toggle');
+        $review->update(['status' => $review->status === 'visible' ? 'hidden' : 'visible']);
+
+        return back()->with('success', $review->status === 'hidden' ? 'Đã ẩn đánh giá.' : 'Đã hiển thị lại đánh giá.');
     }
 
     /** DELETE /admin/reviews/{review} */
-    public function destroy(\App\Models\Review $review)
+    public function destroy(Review $review)
     {
-        // 1. $review->delete()
-        abort(501, 'TODO [Thành viên C]: ReviewController@destroy');
+        $review->delete();
+
+        return back()->with('success', 'Đã xóa đánh giá.');
     }
 }
