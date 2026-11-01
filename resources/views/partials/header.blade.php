@@ -12,7 +12,7 @@
             <div class="collapse navbar-collapse" id="mainNav">
                 {{-- Ô tìm kiếm: GET /products?q=... (Thành viên B xử lý ở ProductController@index) --}}
                 <form class="d-flex mx-lg-4 flex-grow-1" action="{{ route('products.index') }}" method="GET">
-                    <input class="form-control" type="search" name="q" value="{{ request('q') }}" placeholder="Tìm bút, vở, giấy in...">
+                    <input class="form-control" type="search" name="q" value="{{ is_string(request('q')) ? request('q') : '' }}" placeholder="Tìm bút, vở, giấy in...">
                     <button class="btn btn-dark ms-2" type="submit"><i class="bi bi-search"></i></button>
                 </form>
 

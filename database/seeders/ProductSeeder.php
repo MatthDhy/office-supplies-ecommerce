@@ -18,7 +18,7 @@ class ProductSeeder extends Seeder
                 ['Bút gel Uni-ball Signo 0.5', 'Uni-ball', 25000, 22000, 120, true],
                 ['Bút lông bảng Thiên Long WB-03', 'Thiên Long', 12000, null, 80, false],
             ],
-            've-so-tay' => [
+            'vo-so-tay' => [
                 ['Vở kẻ ngang Hồng Hà 96 trang', 'Hồng Hà', 9000, null, 300, true],
                 ['Sổ tay bìa da A5', 'Klong', 65000, 55000, 60, true],
                 ['Sổ lò xo A4 200 trang', 'Campus', 48000, null, 70, false],

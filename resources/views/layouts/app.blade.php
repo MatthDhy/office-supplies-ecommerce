@@ -21,7 +21,7 @@
         @yield('content')
     </main>
 
-    @include('partials.footer')
+    @include('partials.footer', ['full' => $__env->hasSection('footer_full')])
 
     {{-- Toast dùng chung: gọi toast('nội dung', 'success'|'danger') từ JS --}}
     <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toast-container"></div>

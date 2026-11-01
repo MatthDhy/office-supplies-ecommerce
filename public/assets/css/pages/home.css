@@ -6,7 +6,7 @@
 
 /* ---------- Kiểu chữ ----------
    Dòng 1.02–1.1 (không dùng 0.94 như Figma) để dấu tiếng Việt viết hoa không chạm dòng trên. */
-.pc-h1 { margin: 0; font: 800 clamp(44px, 7.2vw, 104px)/1.02 var(--font-display); text-transform: uppercase; }
+.pc-h1 { margin: 0; font: 800 clamp(44px, 5vw, 104px)/1.2 var(--font-display); text-transform: uppercase; }
 .pc-h2 { margin: 0; font: 800 clamp(30px, 3.4vw, 48px)/1.1 var(--font-display); text-transform: uppercase; }
 .pc-h2--md { font-size: clamp(28px, 2.8vw, 40px); }
 .pc-h2--lg { font-size: clamp(34px, 3.9vw, 55px); }
@@ -28,6 +28,8 @@
 /* ---------- 1. Hero ---------- */
 .pc-hero { display: grid; grid-template-columns: minmax(0, 638fr) minmax(0, 666fr); align-items: center; gap: 40px; padding-bottom: 64px; }
 .pc-hero__text { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; }
+.pc-hero__text { container-type: inline-size; }
+.pc-hero .pc-h1 { font-size: clamp(36px, calc(100cqw / 6.3), 104px); }
 .pc-hero__actions { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
 .pc-hero__media { position: relative; }
 .pc-hero__media .pc-photo { aspect-ratio: 666 / 568; }
@@ -75,10 +77,7 @@
 }
 .pc-collage__item:hover .pc-h3 { text-decoration: underline; }
 
-/* ---------- 7. Câu chuyện thương hiệu ---------- */
-.pc-story { display: grid; grid-template-columns: minmax(0, 674fr) minmax(0, 1fr); align-items: center; gap: 48px; }
-.pc-story__img { aspect-ratio: 674 / 430; }
-.pc-story__text { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
+
 
 /* ---------- Tablet (≤ 1099): hàng sản phẩm hiện 2 thẻ ---------- */
 @media (max-width: 1099.98px) {
@@ -92,7 +91,7 @@
     .pc-banner__img { min-height: 260px; border-width: 1.5px 0 0; }
     .pc-collage { grid-template-columns: 1fr; grid-template-rows: none; }
     .pc-collage__item--big { grid-row: auto; min-height: 340px; }
-    .pc-story { grid-template-columns: 1fr; gap: 28px; }
+    
 }
 
 /* ---------- Dưới 700: hero xếp dọc, ô danh mục 2 cột ---------- */

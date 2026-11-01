@@ -2,6 +2,8 @@
 
 @section('title', 'Trang chủ')
 
+@section('footer_full', '1')
+
 @push('styles')
 <link href="{{ asset('assets/css/pages/home.css') }}" rel="stylesheet">
 @endpush
@@ -10,7 +12,7 @@
     /*
      * ẢNH TRANG CHỦ — bỏ file vào public/images/home/ với đúng tên dưới đây (chưa có ảnh thì khung hiện màu pastel):
      *   hero.webp  tile-notebooks.webp  tile-pens.webp  tile-desk.webp  tile-art.webp
-     *   banner.webp  collage-page.webp  collage-color.webp  collage-desk.webp  story.webp
+     *   banner.webp  collage-page.webp  collage-color.webp  collage-desk.webp  
      */
     $img = fn (string $file) => asset('images/home/' . $file);
 
@@ -127,19 +129,7 @@
         'items' => $favorites,
     ])
 
-    {{-- 7. CÂU CHUYỆN THƯƠNG HIỆU =================================== --}}
-    <section class="pc-section" aria-labelledby="story-title">
-        <div class="pc-story">
-            <div class="pc-photo pc-story__img pc-bg-soft"><img src="{{ $img('story.webp') }}" alt="Góc bàn bên cửa sổ với sổ tay, bút chì và chậu cây nhỏ" loading="lazy"></div>
-            <div class="pc-story__text">
-                <p class="pc-eyebrow">Xin chào, chúng mình là PAPER CLUB.</p>
-                <h2 class="pc-h2 pc-h2--lg" id="story-title">Thêm chút chỗ để sáng tạo</h2>
-                <p class="pc-body pc-body--lg">Chúng mình tin rằng đồ dùng tốt khiến những khoảnh khắc thường ngày dễ bắt đầu hơn. Cho bản nháp đầu tiên, giáo án ngày mai, ý tưởng lớn hay danh sách nhỏ — ở đây đều có chỗ cho tất cả.</p>
-                {{-- TODO: trỏ tới trang "Câu chuyện của chúng mình" khi Leader thêm route --}}
-                <a href="#" class="pc-btn pc-btn--outline">Câu chuyện của chúng mình</a>
-            </div>
-        </div>
-    </section>
+
 
     {{-- Form đăng ký email (Figma): chưa có backend nên chưa đưa vào. Thêm lại khi có route. --}}
 </div>

@@ -1,0 +1,113 @@
+/* ===== TRANG DANH SÁCH SẢN PHẨM (front/products/index) — phần riêng của trang.
+   Token màu/font, .pc-btn, .pc-card... nằm trong app.css ===== */
+
+.cat { padding-top: 24px; }
+
+/* ---------- Breadcrumb + tiêu đề ---------- */
+.cat-crumb { margin-bottom: 32px; font-size: 11px; line-height: 1.55; color: var(--color-muted); }
+.cat-crumb a { color: var(--color-muted); text-decoration: none; }
+.cat-crumb a:hover { text-decoration: underline; }
+.cat-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 32px; }
+.cat-title {
+    margin: 0 0 12px; text-transform: uppercase; text-wrap: balance;
+    font: 800 clamp(32px, 4.4vw, 64px)/1.1 var(--font-display);   /* 1.1: chừa chỗ cho dấu tiếng Việt */
+}
+.cat-summary { margin: 0; font-size: 13px; line-height: 1.55; }
+.cat-spark { flex-shrink: 0; font-size: 64px; }
+
+/* ---------- Thanh lọc ---------- */
+.cat-bar { display: flex; flex-direction: column; gap: 16px; }
+.cat-bar__row { display: flex; align-items: flex-end; gap: 16px; }
+.cat-bar__filters { display: flex; align-items: flex-end; gap: 20px; width: 100%; }
+.cat-bar__filters .cat-field { flex: 1 1 0; }
+.cat-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.cat-field--grow { flex: 1 1 0; }
+.cat-field--sort { width: 240px; flex: none; }
+.cat-field label { font: 600 12px/1.55 var(--font-ui); }
+
+.cat-input, .cat-select {
+    width: 100%; min-height: 48px; padding: 12px;
+    border: var(--pc-border); border-radius: var(--radius-control);
+    background-color: var(--color-white); color: var(--color-ink);
+    font: 400 14px/1.55 var(--font-ui);
+}
+.cat-input::placeholder { color: var(--color-muted); }
+.cat-select {
+    appearance: none; padding-right: 40px; cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%23171717' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+}
+.cat-apply { flex: none; }
+.cat-filter-toggle { display: none; flex: none; }
+.cat-drawer__foot { display: none; }
+
+/* ---------- Thẻ bộ lọc đang bật ---------- */
+.cat-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 16px; }
+.cat-pill {
+    display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px;
+    border: 0; border-radius: 100px; background: var(--color-soft); color: var(--color-ink);
+    font: 600 11px/1.55 var(--font-ui);
+}
+button.cat-pill { cursor: pointer; }
+button.cat-pill:hover { background: var(--color-butter); }
+.cat-clear { padding: 0; border: 0; background: none; color: var(--color-ink); font-size: 12px; text-decoration: underline; cursor: pointer; }
+.cat-rule { margin: 16px 0 24px; border: 0; border-top: 1px solid #D5D5CE; opacity: 1; }
+
+/* ---------- Lưới sản phẩm ---------- */
+.cat-results { min-height: 320px; transition: opacity .15s; }
+.cat-results.is-loading { opacity: .45; pointer-events: none; }
+.cat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+
+/* ---------- Phân trang ---------- */
+.cat-pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-top: 32px; }
+.cat-pager__info { margin: 0; font-size: 11px; line-height: 1.55; }
+.cat-pages { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.cat-page {
+    display: inline-flex; align-items: center; justify-content: center; min-width: 48px; min-height: 48px; padding: 13px 18px;
+    border-radius: var(--radius-control); background: var(--color-soft); color: var(--color-ink);
+    font: 700 12px/1.55 var(--font-ui); text-decoration: none; transition: background-color .15s;
+}
+a.cat-page:hover { background: var(--color-butter); color: var(--color-ink); }
+.cat-page.is-active { background: var(--color-ink); color: var(--color-white); }
+.cat-page.is-disabled { color: var(--color-muted); cursor: default; }
+
+/* ---------- Không có kết quả ---------- */
+.cat-empty {
+    display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 56px 24px; text-align: center;
+    border: var(--pc-border); border-radius: var(--radius-card); background: var(--color-white);
+}
+.cat-empty .bi { font-size: 40px; line-height: 1; }
+.cat-empty h2 { margin: 0; font: 800 clamp(24px, 2.4vw, 32px)/1.15 var(--font-display); text-transform: uppercase; }
+.cat-empty p { margin: 0 0 8px; max-width: 42ch; font-size: 14px; line-height: 1.55; }
+
+/* ---------- Tablet (≤ 1099): 3 cột ---------- */
+@media (max-width: 1099.98px) {
+    .cat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* ---------- Dưới 992: bộ lọc thành ngăn kéo ---------- */
+@media (max-width: 991.98px) {
+    .cat-bar__row { flex-wrap: wrap; }
+    .cat-field--grow { flex: 1 1 100%; }
+    .cat-field--sort { flex: 1 1 0; width: auto; }
+    .cat-filter-toggle { display: inline-flex; }
+
+    .cat-drawer {
+        --bs-offcanvas-bg: var(--color-paper);
+        --bs-offcanvas-width: min(400px, 92vw);
+        border-right: var(--pc-border);
+    }
+    .cat-drawer .offcanvas-title { font: 800 28px/1.1 var(--font-display); text-transform: uppercase; }
+    .cat-bar__filters { flex-direction: column; align-items: stretch; gap: 16px; }
+    .cat-bar__filters .cat-field { flex: none; }
+    .cat-apply { display: none; }                      /* mobile: tự áp dụng khi đổi */
+    .cat-drawer__foot { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+}
+
+/* ---------- Dưới 700: 2 cột ---------- */
+@media (max-width: 699.98px) {
+    .cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .cat-spark { font-size: 40px; }
+    .cat-pager { justify-content: center; }
+    .cat-pager__info { width: 100%; text-align: center; }
+}

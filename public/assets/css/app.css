@@ -104,3 +104,30 @@ body { font-family: var(--font-ui); background: var(--color-paper); color: var(-
 }
 .pc-card__add:hover:not(:disabled) { background: var(--color-ink); color: var(--color-white); }
 .pc-card__add:disabled { background: var(--color-soft); border-color: var(--color-soft); color: var(--color-muted); cursor: not-allowed; }
+
+/* ---------- Footer (partials/footer) ---------- */
+.pc-footer { margin-top: 48px; padding-block: 48px 24px; overflow: hidden; border-top: var(--pc-border); background: var(--color-paper); }
+.pc-footer--full { margin-top: 0; }
+.pc-footer a { color: var(--color-ink); text-decoration: none; }
+.pc-footer a:hover { text-decoration: underline; }
+.pc-footer ul { list-style: none; margin: 0; padding: 0; }
+.pc-footer__slogan { margin: 0; font: 800 26px/1.1 var(--font-display); }
+.pc-footer__top { display: grid; grid-template-columns: minmax(0, 270px) repeat(3, minmax(0, 1fr)); gap: 24px; }
+.pc-footer__brand p:not(.pc-footer__slogan) { margin: 10px 0 0; font-size: 14px; line-height: 1.55; }
+.pc-footer__brand .pc-footer__mail { font-size: 12px; }
+.pc-footer__title { margin: 0 0 10px; font: 700 11px/1.55 var(--font-ui); text-transform: uppercase; }
+.pc-footer__col ul { display: grid; gap: 10px; font-size: 12px; line-height: 1.55; }
+.pc-footer__inline { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 16px; font-size: 13px; }
+.pc-footer__bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; margin-top: 32px; font-size: 11px; line-height: 1.55; }
+/* Chữ thương hiệu cỡ lớn: co theo chiều rộng khung, tối đa 230px như Figma */
+.pc-footer__mark {
+    margin: 24px 0 0; text-align: center; white-space: nowrap; user-select: none;
+    font: 800 clamp(40px, calc((100vw - 2 * var(--pc-margin)) / 4.6), 230px)/1.1 var(--font-display);
+}
+@media (max-width: 991.98px) {
+    .pc-footer__top { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .pc-footer__brand { grid-column: 1 / -1; max-width: 420px; }
+}
+@media (max-width: 575.98px) {
+    .pc-footer__top { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
