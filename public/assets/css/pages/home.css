@@ -1,0 +1,108 @@
+/* ===== TRANG CHỦ (front/home.blade.php) — chỉ chứa phần riêng của trang này.
+   Token màu/font, .pc-btn, .pc-photo, .pc-card... nằm trong app.css ===== */
+
+.pc-home { padding-top: 36px; }
+.pc-bg-soft { background: var(--color-soft); }
+
+/* ---------- Kiểu chữ ----------
+   Dòng 1.02–1.1 (không dùng 0.94 như Figma) để dấu tiếng Việt viết hoa không chạm dòng trên. */
+.pc-h1 { margin: 0; font: 800 clamp(44px, 7.2vw, 104px)/1.02 var(--font-display); text-transform: uppercase; }
+.pc-h2 { margin: 0; font: 800 clamp(30px, 3.4vw, 48px)/1.1 var(--font-display); text-transform: uppercase; }
+.pc-h2--md { font-size: clamp(28px, 2.8vw, 40px); }
+.pc-h2--lg { font-size: clamp(34px, 3.9vw, 55px); }
+.pc-h3 { margin: 0; font: 800 clamp(18px, 1.6vw, 23px)/1.2 var(--font-display); text-transform: uppercase; }
+.pc-h3--lg { font-size: clamp(20px, 1.95vw, 28px); line-height: 1.15; }
+.pc-eyebrow { margin: 0; font: 600 11px/1.55 var(--font-ui); text-transform: uppercase; }
+.pc-eyebrow--wide { letter-spacing: .12em; }
+.pc-lead { margin: 0; max-width: 470px; font-size: 17px; line-height: 1.55; }
+.pc-body { margin: 0; font-size: 14px; line-height: 1.55; }
+.pc-body--lg { font-size: 15px; }
+.pc-small { margin: 0; font-size: 12px; line-height: 1.55; }
+
+/* ---------- Khối chung ---------- */
+.pc-section { padding-bottom: 72px; }
+.pc-section__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 24px; }
+.pc-section__sub { margin: 8px 0 0; font-size: 12px; line-height: 1.55; }
+.pc-spark--sm { font-size: 30px; }
+
+/* ---------- 1. Hero ---------- */
+.pc-hero { display: grid; grid-template-columns: minmax(0, 638fr) minmax(0, 666fr); align-items: center; gap: 40px; padding-bottom: 64px; }
+.pc-hero__text { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; }
+.pc-hero__actions { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.pc-hero__media { position: relative; }
+.pc-hero__media .pc-photo { aspect-ratio: 666 / 568; }
+.pc-hero__spark { position: absolute; top: -34px; right: 4px; font-size: 100px; }
+.pc-pill {
+    position: absolute; left: 20px; bottom: 16px; padding: 9px 16px;
+    border: var(--pc-border); border-radius: 100px; background: var(--color-paper);
+    font: 700 10px/1.55 var(--font-ui); text-transform: uppercase;
+}
+
+/* ---------- 2. Ô danh mục ---------- */
+.pc-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+.pc-tile { display: block; color: var(--color-ink); text-decoration: none; }
+.pc-tile__img { aspect-ratio: 318 / 286; }
+.pc-tile__label { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 14px 0; }
+.pc-tile:hover .pc-h3 { text-decoration: underline; }
+
+/* ---------- 3. Banner ---------- */
+.pc-banner { display: grid; grid-template-columns: minmax(0, 480px) minmax(0, 1fr); overflow: hidden; border: var(--pc-border); border-radius: var(--radius-card); background: var(--color-lavender); }
+.pc-banner__text { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; padding: 40px; }
+.pc-banner__img { min-height: 446px; border-width: 0 0 0 1.5px; border-radius: 0; }
+
+/* ---------- Hàng sản phẩm cuộn ngang ---------- */
+.pc-rail-nav { display: flex; gap: 4px; }
+.pc-rail-btn { width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: var(--radius-control); background: transparent; color: var(--color-ink); font-size: 22px; cursor: pointer; }
+.pc-rail-btn:hover { background: var(--color-soft); }
+.pc-rail {
+    display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 72px) / 4); gap: 24px;
+    overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none;
+    padding: 6px; margin: -6px;                 /* chừa chỗ cho vòng focus khỏi bị cắt */
+}
+.pc-rail::-webkit-scrollbar { display: none; }
+.pc-rail__item { scroll-snap-align: start; min-width: 0; }
+
+/* ---------- 5. Ảnh ghép ---------- */
+.pc-collage { display: grid; grid-template-columns: minmax(0, 752fr) minmax(0, 568fr); grid-template-rows: 1fr 1fr; gap: 24px; }
+.pc-collage__item { position: relative; display: block; min-height: 283px; color: var(--color-ink); text-decoration: none; }
+.pc-collage__item .pc-photo { position: absolute; inset: 0; }
+.pc-collage__item--big { grid-row: 1 / span 2; min-height: 590px; }
+.pc-collage__label {
+    position: absolute; left: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 4px;
+    max-width: min(440px, calc(100% - 32px)); padding: 16px;
+    border: var(--pc-border); border-radius: var(--radius-control); background: var(--color-paper);
+    font-size: 11px; line-height: 1.55; text-transform: uppercase;
+}
+.pc-collage__item:hover .pc-h3 { text-decoration: underline; }
+
+/* ---------- 7. Câu chuyện thương hiệu ---------- */
+.pc-story { display: grid; grid-template-columns: minmax(0, 674fr) minmax(0, 1fr); align-items: center; gap: 48px; }
+.pc-story__img { aspect-ratio: 674 / 430; }
+.pc-story__text { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
+
+/* ---------- Tablet (≤ 1099): hàng sản phẩm hiện 2 thẻ ---------- */
+@media (max-width: 1099.98px) {
+    .pc-rail { grid-auto-columns: calc((100% - 24px) / 2); }
+}
+
+/* ---------- Dưới 800: xếp dọc banner, ảnh ghép, câu chuyện ---------- */
+@media (max-width: 799.98px) {
+    .pc-banner { grid-template-columns: 1fr; }
+    .pc-banner__text { padding: 28px; }
+    .pc-banner__img { min-height: 260px; border-width: 1.5px 0 0; }
+    .pc-collage { grid-template-columns: 1fr; grid-template-rows: none; }
+    .pc-collage__item--big { grid-row: auto; min-height: 340px; }
+    .pc-story { grid-template-columns: 1fr; gap: 28px; }
+}
+
+/* ---------- Dưới 700: hero xếp dọc, ô danh mục 2 cột ---------- */
+@media (max-width: 699.98px) {
+    .pc-home { padding-top: 24px; }
+    .pc-hero { grid-template-columns: 1fr; gap: 32px; padding-bottom: 48px; }
+    .pc-hero__actions { width: 100%; }
+    .pc-hero__actions .pc-btn { width: 100%; }
+    .pc-hero__spark { font-size: 64px; top: -24px; }
+    .pc-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .pc-section { padding-bottom: 48px; }
+    .pc-rail { gap: 16px; grid-auto-columns: calc((100% - 16px) / 2); }
+}
