@@ -18,10 +18,10 @@
 
     // 4 ô "Tìm thứ bạn cần": nội dung tuyển chọn tĩnh, mỗi ô trỏ tới 1 danh mục (slug) trong DB
     $tiles = [
-        ['label' => 'Sổ & giấy',      'slug' => 'vo-so-tay',         'img' => 'tile-notebooks.webp', 'tone' => 'mint'],
-        ['label' => 'Bút viết',       'slug' => 'but-viet',          'img' => 'tile-pens.webp',      'tone' => 'pink'],
-        ['label' => 'Góc làm việc',   'slug' => 'do-dung-van-phong', 'img' => 'tile-desk.webp',      'tone' => 'butter'],
-        ['label' => 'Dụng cụ vẽ',     'slug' => 'dung-cu-hoc-tap',   'img' => 'tile-art.webp',       'tone' => 'lavender'],
+        ['label' => 'Sổ & giấy',      'slug' => 'vo-so-tay',         'img' => 'notebook.jpg', 'tone' => 'mint'],
+        ['label' => 'Bút viết',       'slug' => 'but-viet',          'img' => 'pens.jpg',      'tone' => 'pink'],
+        ['label' => 'Góc làm việc',   'slug' => 'do-dung-van-phong', 'img' => 'desk_essential.jpg',      'tone' => 'butter'],
+        ['label' => 'Dụng cụ vẽ',     'slug' => 'dung-cu-hoc-tap',   'img' => 'art_creative.jpg',       'tone' => 'lavender'],
     ];
 @endphp
 
@@ -47,7 +47,7 @@
         </div>
 
         <div class="pc-hero__media">
-            <div class="pc-photo pc-bg-peach"><img src="{{ $img('hero.webp') }}" alt="Sổ tay, bút và phụ kiện bàn làm việc trên nền pastel"></div>
+            <div class="pc-photo pc-bg-peach"><img src="{{ $img('cute_pastel_stationery.png') }}" alt="Sổ tay, bút và phụ kiện bàn làm việc trên nền pastel"></div>
             <svg class="pc-spark pc-hero__spark" aria-hidden="true"><use href="#pc-spark"/></svg>
             <span class="pc-pill">Đồ nhỏ. Khả năng lớn.</span>
         </div>
@@ -82,7 +82,7 @@
                 <a href="{{ route('products.index', ['category' => 'dung-cu-hoc-tap']) }}" class="pc-btn pc-btn--primary">Khám phá bộ sưu tập</a>
                 <svg class="pc-spark pc-spark--sm" aria-hidden="true"><use href="#pc-spark"/></svg>
             </div>
-            <div class="pc-photo pc-banner__img pc-bg-peach"><img src="{{ $img('banner.webp') }}" alt="Bàn làm việc gỗ với sổ tay mở và cốc đựng bút" loading="lazy"></div>
+            <div class="pc-photo pc-banner__img pc-bg-peach"><img src="{{ $img('office.jpg') }}" alt="Bàn làm việc gỗ với sổ tay mở và cốc đựng bút" loading="lazy"></div>
         </div>
     </section>
 
@@ -98,7 +98,7 @@
     <section class="pc-section" aria-label="Gợi ý theo nhu cầu">
         <div class="pc-collage">
             <a class="pc-collage__item pc-collage__item--big" href="{{ route('products.index', ['category' => 'vo-so-tay']) }}">
-                <span class="pc-photo pc-bg-mint"><img src="{{ $img('collage-page.webp') }}" alt="" loading="lazy"></span>
+                <span class="pc-photo pc-bg-mint"><img src="{{ $img('notebook3.jpg') }}" alt="" loading="lazy"></span>
                 <span class="pc-collage__label">
                     <strong class="pc-h3 pc-h3--lg">Một trang mới</strong>
                     <span>Cho mọi chương tiếp theo →</span>
