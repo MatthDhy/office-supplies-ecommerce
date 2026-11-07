@@ -1,0 +1,10 @@
+/* Trang yêu thích — chỉ phần riêng; lưới, phân trang, trạng thái rỗng dùng lại từ catalog.css (.cat-*) */
+
+.wl-card { display: flex; flex-direction: column; gap: 8px; }
+.wl-card__img { aspect-ratio: 1 / 1; }
+
+.wl-card__actions { display: flex; gap: 8px; margin-top: 4px; }
+.wl-card__actions .btn-wl-move { flex: 1 1 auto; padding-inline: 12px; }
+.wl-card__actions .btn-wl-remove { flex: 0 0 48px; padding: 0; }
+.wl-card__actions .btn:disabled,
+.wl-card__actions .pc-btn:disabled { opacity: .5; cursor: not-allowed; }

@@ -108,7 +108,7 @@
 
     {{-- ============ KẾT QUẢ (được thay bằng AJAX khi lọc) ============ --}}
     <div id="product-grid" class="cat-results">
-        @include('front.products.grid')
+        @include('front.products._grid')
     </div>
 </div>
 @endsection

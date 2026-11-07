@@ -1,0 +1,86 @@
+/* Trang tài khoản. Tiền tố .pf-; .cat-crumb/.cat-head/.cat-rule dùng lại từ catalog.css */
+
+.pf-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; align-items: start; padding-bottom: 80px; }
+.pf-box { padding: 24px; border: var(--pc-border); border-radius: var(--radius-card); background: var(--color-white); }
+.pf-h2 { margin: 0 0 20px; font: 800 clamp(20px, 2vw, 26px)/1.15 var(--font-display); text-transform: uppercase; }
+.pf-count { font-size: .6em; font-weight: 600; color: var(--color-muted); }
+
+/* ---------- Form ---------- */
+.pf-form { display: grid; gap: 16px; }
+.pf-field { display: grid; gap: 6px; }
+.pf-label { font: 600 13px/1.4 var(--font-ui); }
+.pf-input {
+    width: 100%; min-height: 48px; padding: 10px 14px;
+    border: var(--pc-border); border-radius: var(--radius-control);
+    background: var(--color-paper); font: 400 15px/1.5 var(--font-ui); color: var(--color-ink);
+}
+textarea.pf-input { min-height: 0; resize: vertical; }
+.pf-input:disabled { background: var(--color-soft); color: var(--color-muted); cursor: not-allowed; }
+.pf-hint { margin: 0; font-size: 12px; line-height: 1.5; color: var(--color-muted); }
+.pf-error { margin: 0; font-size: 13px; color: #b3261e; }
+.pf-submit { justify-self: start; }
+.pf-submit.is-busy { opacity: .6; cursor: progress; pointer-events: none; }
+
+.pf-check { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
+.pf-check input { width: 18px; height: 18px; accent-color: var(--color-ink); }
+
+.pf-details { margin-top: 4px; padding-top: 16px; border-top: 1px solid var(--color-soft); }
+.pf-details > summary { margin-bottom: 12px; font: 700 14px var(--font-ui); cursor: pointer; }
+.pf-details[open] > summary { margin-bottom: 16px; }
+.pf-details .pf-field + .pf-field { margin-top: 16px; }
+
+/* ---------- Avatar ---------- */
+.pf-avatar { position: relative; display: flex; align-items: center; gap: 20px; }
+
+/* input file ẩn (vẫn focus được bằng bàn phím); ảnh tròn và nút "Tải ảnh lên" là <label for="pf-avatar"> */
+.pf-file { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.pf-file:focus-visible ~ .pf-avatar__img,
+.pf-file:focus-visible ~ .pf-avatar__side .pf-avatar__btn { outline: 3px solid var(--color-ink); outline-offset: 3px; }
+
+.pf-avatar__img {
+    position: relative; flex: 0 0 88px; width: 88px; height: 88px; display: grid; place-items: center; overflow: hidden;
+    border: var(--pc-border); border-radius: 50%; background: var(--color-pink); font: 800 32px var(--font-display);
+    cursor: pointer;
+}
+.pf-avatar__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Lớp phủ "Đổi ảnh" khi rê chuột / focus */
+.pf-avatar__img::after {
+    content: "Đổi ảnh"; position: absolute; inset: 0; display: grid; place-items: center;
+    background: rgba(23, 23, 23, .55); color: var(--color-white); font: 600 12px var(--font-ui);
+    opacity: 0; transition: opacity .15s;
+}
+.pf-avatar__img:hover::after { opacity: 1; }
+.pf-file:focus-visible ~ .pf-avatar__img::after { opacity: 1; }
+
+.pf-avatar__side { display: grid; gap: 8px; justify-items: start; min-width: 0; }
+.pf-avatar__btn { cursor: pointer; }
+
+/* ---------- Sổ địa chỉ ---------- */
+.pf-addr {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+    margin-bottom: 12px; padding: 16px; border: 1px solid #D5D5CE; border-radius: var(--radius-control); background: var(--color-paper);
+}
+.pf-addr.is-default { border: var(--pc-border); background: var(--color-butter); }
+.pf-addr__body { min-width: 0; }
+.pf-addr__name { margin: 0 0 2px; font: 700 15px/1.4 var(--font-ui); }
+.pf-addr__phone { margin: 0 0 4px; font-size: 13px; color: var(--color-muted); }
+.pf-addr__text { margin: 0; font-size: 14px; line-height: 1.55; overflow-wrap: anywhere; }
+.pf-badge { display: inline-block; margin-left: 6px; padding: 2px 8px; border-radius: 6px; background: var(--color-ink); color: var(--color-white); font: 600 11px var(--font-ui); vertical-align: middle; }
+
+.pf-addr__actions { display: grid; gap: 6px; justify-items: end; flex: none; }
+.pf-addr__actions form { margin: 0; }
+.pf-link { padding: 4px 0; border: 0; background: none; font: 600 13px var(--font-ui); color: var(--color-ink); text-decoration: underline; cursor: pointer; }
+.pf-link--danger { color: #b3261e; }
+
+.pf-empty { margin: 0 0 16px; padding: 16px; border: 1px dashed var(--color-muted); border-radius: var(--radius-control); font-size: 14px; color: var(--color-muted); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 991.98px) {
+    .pf-layout { grid-template-columns: 1fr; }
+}
+@media (max-width: 575.98px) {
+    .pf-box { padding: 18px; }
+    .pf-avatar { flex-direction: column; align-items: flex-start; }
+    .pf-addr { flex-direction: column; }
+    .pf-addr__actions { justify-items: start; grid-auto-flow: column; gap: 16px; }
+}

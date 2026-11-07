@@ -49,4 +49,13 @@ $(document).on('click', '.btn-add-to-cart', function () {
         .always(() => $btn.prop('disabled', false));
 });
 
-// 6) [B] TODO: handler .btn-wishlist (gọi wishlist.toggle, đổi icon bi-heart <-> bi-heart-fill)
+// 6) Nút tim (class .btn-wishlist, data-id, data-url)
+$(document).on('click', '.btn-wishlist', function () {
+    const $btn = $(this).prop('disabled', true);
+    ajaxCall('POST', $btn.data('url'), { product_id: $btn.data('id') })
+        .done(res => {
+            $btn.find('i').toggleClass('bi-heart', !res.data.added).toggleClass('bi-heart-fill', res.data.added);
+            toast(res.message);
+        })
+        .always(() => $btn.prop('disabled', false));
+});

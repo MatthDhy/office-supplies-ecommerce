@@ -87,15 +87,46 @@ class ProductController extends Controller
     }
 
     /** GET /products/{slug} */
-    public function show(\App\Models\Product $product)
+    public function show(Request $request, Product $product)
     {
-        // 1. Nếu $product->status !== 'active' -> abort(404)
-        // 2. Load: category, reviews đang visible (kèm user), avg rating (->reviews()->visible()->avg('rating'))
-        // 3. Kiểm tra sản phẩm đã nằm trong wishlist của user chưa (để tô tim)
-        // 4. Kiểm tra user có được review không (đã mua + đơn completed + chưa review)
-        // 5. Lấy 4 sản phẩm cùng danh mục để gợi ý
-        // 6. return view('front.products.show', compact(...))
-        abort(501, 'TODO [Thành viên B]: ProductController@show');
+        // 1. Sản phẩm ngừng bán hoặc danh mục đang ẩn -> 404
+        abort_unless($product->status === 'active', 404);
+        $product->load('category');
+        abort_unless($product->category?->status === 'active', 404);
+
+        // 2. Review đang hiển thị (kèm user) + điểm trung bình
+        $reviews = $product->reviews()->visible()->with('user:id,full_name,avatar')->latest()->get();
+        $avgRating = round((float) $product->reviews()->visible()->avg('rating'), 1);
+
+        $user = $request->user();
+        $inWishlist = false;
+        $canReview = false;
+        $myReview = null;
+
+        if ($user) {
+            // 3. Đã nằm trong wishlist chưa (để tô tim)
+            $inWishlist = $user->wishlistProducts()->where('products.id', $product->id)->exists();
+
+            // 4. Được review khi: có đơn completed chứa sản phẩm này + chưa review
+            $myReview = $reviews->firstWhere('user_id', $user->id)
+                ?? $product->reviews()->where('user_id', $user->id)->first();   // review của mình kể cả khi bị admin ẩn
+            $hasBought = Order::where('user_id', $user->id)
+                ->where('status', Order::COMPLETED)
+                ->whereHas('items', fn ($q) => $q->where('product_id', $product->id))
+                ->exists();
+            $canReview = $hasBought && !$myReview;
+        }
+
+        // 5. 4 sản phẩm cùng danh mục để gợi ý
+        $related = Product::active()
+            ->where('category_id', $product->category_id)
+            ->where('id', '!=', $product->id)
+            ->inRandomOrder()->limit(4)->get();
+
+        // 6.
+        return view('front.products.show', compact(
+            'product', 'reviews', 'avgRating', 'inWishlist', 'canReview', 'myReview', 'related'
+        ));
     }
 
     /* ---------------- helpers ---------------- */
